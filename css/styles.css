@@ -174,7 +174,11 @@ input[type="checkbox"]:checked + label:after {
     align-self: center;
     justify-self: center;
   }
+  li{
+    width: 500px;
+  }
 }
+
 
 @media (min-width: 768px) and (max-width: 991px) {
   body {
@@ -189,6 +193,9 @@ input[type="checkbox"]:checked + label:after {
     display: flex;
     align-self: center;
     justify-self: center;
+  }
+  li{
+    width: 450px;
   }
 
 }
@@ -207,6 +214,9 @@ input[type="checkbox"]:checked + label:after {
     align-self: center;
     justify-self: center;
   } 
+  li{
+    width: 340px;
+  }
   
   /* nav {
         display: flex;
