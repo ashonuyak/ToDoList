@@ -1,6 +1,7 @@
 let addMessage = document.querySelector(".message"),
   addButton = document.querySelector(".add"),
   todo = document.querySelector(".todo"),
+  hints = document.querySelector(".hints")
   addSearch = document.querySelector(".search"),
   addGo = document.querySelector(".go"),
   addBack = document.querySelector(".back");
@@ -94,10 +95,12 @@ addGo.addEventListener("click", () => {
   let displayMessage = "";
   let searchResults = [];
   arr.forEach((item) => {
-    if (item.todo === addSearch.value) {
+    if (item.todo.indexOf(addSearch.value) !== -1) {
       searchResults.unshift(item);
+      hints.innerHTML = "<div class='hints'>Press ESC to go back</div>";
     } else {
-      todo.innerHTML = "<div class='noMatches'>No matches</div>";
+      todo.innerHTML = "<div class='hints'>No matches</div>";
+      hints.innerHTML = "<div class='hints'>Press ESC to go back</div>";
     }
   });
   searchResults.forEach(function (item, i) {
@@ -116,11 +119,46 @@ addGo.addEventListener("click", () => {
   addSearch.value = "";
 });
 
+addSearch.addEventListener("keyup", function (event) {
+  if (!addSearch.value) return;
+  let arr = JSON.parse(localStorage.getItem("todo"));
+  let displayMessage = "";
+  let searchResults = [];
+  if (event.keyCode === 13) {
+    addBack.style.display = "block";
+    addGo.style.display = "none";
+    arr.forEach((item) => {
+      if (item.todo.indexOf(addSearch.value) !== -1) {
+        searchResults.unshift(item);
+        hints.innerHTML = "<div class='hints'>Press ESC to go back</div>";
+      } else {
+        todo.innerHTML = "<div class='hints'>No matches</div>";
+        hints.innerHTML = "<div class='hints'>Press ESC to go back</div>";
+      }
+    });
+    searchResults.forEach(function (item, i) {
+      displayMessage += `
+          <li>
+            <input type='checkbox' id='item_${i}' ${
+        item.checked ? "checked" : ""
+      }>
+            <label for='item_${i}' class="${
+        item.important ? "important" : ""
+      }">${item.todo}</label>
+          </li>
+          `;
+      todo.innerHTML = displayMessage;
+    });
+    addSearch.value = "";
+  }
+});
+
 addBack.addEventListener("click", () => {
   addBack.style.display = "none";
   addGo.style.display = "block";
   let displayMessage = "";
   let array = JSON.parse(localStorage.getItem("todo"));
+  hints.innerHTML = "";
   array.forEach(function (item, i) {
     displayMessage += `
               <li>
@@ -134,4 +172,27 @@ addBack.addEventListener("click", () => {
               `;
     todo.innerHTML = displayMessage;
   });
+});
+
+addSearch.addEventListener("keyup", function (event) {
+  let displayMessage = "";
+  let array = JSON.parse(localStorage.getItem("todo"));
+  if (event.keyCode === 27 & addSearch.value === "") {
+    addBack.style.display = "none";
+    addGo.style.display = "block";
+    hints.innerHTML = "";
+    array.forEach(function (item, i) {
+      displayMessage += `
+              <li>
+                <input type='checkbox' id='item_${i}' ${
+        item.checked ? "checked" : ""
+      }>
+                <label for='item_${i}' class="${
+        item.important ? "important" : ""
+      }">${item.todo}</label>
+              </li>
+              `;
+      todo.innerHTML = displayMessage;
+    });
+  }
 });
